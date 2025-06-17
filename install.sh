@@ -12,32 +12,32 @@ else
 fi
 
 cd "$INSTALL_DIR" || exit 1
-echo "📦 Installing Node.js packages..."
-npm install --silent
+
+if command -v npm >/dev/null 2>&1; then
+  echo "📦 Installing Node.js packages..."
+  npm install --silent
+else
+  echo "❌ npm is not installed. Please install Node.js and try again."
+  exit 1
+fi
 
 SHELL_NAME=$(basename "$SHELL")
-ALIAS_CMD="alias motivate='node $INSTALL_DIR/index.js'"
-
 if [[ "$SHELL_NAME" == "zsh" ]]; then
   SHELL_RC="$HOME/.zshrc"
 elif [[ "$SHELL_NAME" == "bash" ]]; then
   SHELL_RC="$HOME/.bashrc"
-elif [[ "$SHELL_NAME" == "fish" ]]; then
-  SHELL_RC="$HOME/.config/fish/config.fish"
-  ALIAS_CMD="alias motivate 'node $INSTALL_DIR/index.js'"
 else
-  echo "⚠️ Unsupported shell: $SHELL_NAME. Please add the alias manually."
-  exit 1
+  SHELL_RC="$HOME/.profile"
 fi
 
-if ! grep -q "motivate=" "$SHELL_RC"; then
+ALIAS_CMD="alias motivate='node $INSTALL_DIR/index.js'"
+if ! grep -q "alias motivate=" "$SHELL_RC"; then
   echo "$ALIAS_CMD" >> "$SHELL_RC"
   echo "✅ Alias added to $SHELL_RC"
 else
   echo "ℹ️ Alias already exists in $SHELL_RC"
 fi
 
-echo "♻️ Reloading your shell..."
 source "$SHELL_RC"
 
 echo "🎉 Done! Type 'motivate' in your terminal to get inspired!"
