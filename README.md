@@ -2,7 +2,7 @@
 
 Get motivation quotes right in your terminal by just typing `motivate`. You will get a random inspirational quote that keeps you focused and energized throughout the day. Simple and fast for a quick boost.
 
-![Screenshot of the script in action](https://raw.githubusercontent.com/mesamirh/Terminal-Motivation/main/assets/banner.png)
+![Terminal Motivation Header](https://raw.githubusercontent.com/mesamirh/Terminal-Motivation/main/assets/header.png)
 
 ---
 
