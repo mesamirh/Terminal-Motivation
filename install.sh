@@ -1,47 +1,43 @@
-#!/usr/bin/env bash
-set -e
+#!/bin/bash
 
-REPO_URL="https://github.com/mesamirh/Terminal-Motivation.git"
 INSTALL_DIR="$HOME/.terminal-motivation"
-SCRIPT_PATH="$INSTALL_DIR/index.js"
 
-echo "Installing Terminal Motivation..."
+echo "📦 Installing Terminal Motivation..."
 
-if [ ! -d "$INSTALL_DIR" ]; then
-  git clone "$REPO_URL" "$INSTALL_DIR"
+if [ -d "$INSTALL_DIR" ]; then
+  echo "🔄 Updating existing install..."
+  git -C "$INSTALL_DIR" pull
 else
-  echo "Updating existing installation..."
-  cd "$INSTALL_DIR" && git pull
+  git clone https://github.com/mesamirh/Terminal-Motivation.git "$INSTALL_DIR"
 fi
 
-if ! head -1 "$SCRIPT_PATH" | grep -q "^#!"; then
-  sed -i '' '1i\
-#!/usr/bin/env node
-' "$SCRIPT_PATH"
+cd "$INSTALL_DIR" || exit 1
+
+if command -v npm >/dev/null 2>&1; then
+  echo "📦 Installing Node.js packages..."
+  npm install --silent
+else
+  echo "❌ npm is not installed. Please install Node.js and try again."
+  exit 1
 fi
 
-chmod +x "$SCRIPT_PATH"
+SHELL_NAME=$(basename "$SHELL")
+if [[ "$SHELL_NAME" == "zsh" ]]; then
+  SHELL_RC="$HOME/.zshrc"
+elif [[ "$SHELL_NAME" == "bash" ]]; then
+  SHELL_RC="$HOME/.bashrc"
+else
+  SHELL_RC="$HOME/.profile"
+fi
 
-shell_name=$(basename "$SHELL")
-case "$shell_name" in
-  bash) SHELL_RC="$HOME/.bashrc" ;;
-  zsh) SHELL_RC="$HOME/.zshrc" ;;
-  fish) SHELL_RC="$HOME/.config/fish/config.fish" ;;
-  *) SHELL_RC="$HOME/.bashrc" ;;
-esac
-
-ALIAS_CMD="alias motivate=\"node $SCRIPT_PATH\""
-
-if ! grep -Fxq "$ALIAS_CMD" "$SHELL_RC" 2>/dev/null; then
+ALIAS_CMD="alias motivate='node $INSTALL_DIR/index.js'"
+if ! grep -q "alias motivate=" "$SHELL_RC"; then
   echo "$ALIAS_CMD" >> "$SHELL_RC"
-  echo "Added alias to $SHELL_RC"
+  echo "✅ Alias added to $SHELL_RC"
 else
-  echo "Alias already exists in $SHELL_RC"
+  echo "ℹ️ Alias already exists in $SHELL_RC"
 fi
 
-echo ""
-echo "Installation complete!"
-echo "Restart your terminal or run: source $SHELL_RC"
-echo "Then you can use 'motivate' command to see a motivational quote."
-echo ""
-echo "Note for Windows users: Use Git Bash or WSL for best compatibility."
+source "$SHELL_RC"
+
+echo "🎉 Done! Type 'motivate' in your terminal to get inspired!"

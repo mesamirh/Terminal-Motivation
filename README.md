@@ -23,7 +23,7 @@ Get motivation quotes right in your terminal by just typing `motivate`. You will
 Just paste this into your terminal:
 
 ```bash
-curl -s [https://raw.githubusercontent.com/mesamirh/Terminal-Motivation/main/install.sh](https://raw.githubusercontent.com/mesamirh/Terminal-Motivation/main/install.sh) | bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/mesamirh/Terminal-Motivation/main/install.sh)"
 ```
 
 ## 📦 Usage
@@ -35,6 +35,12 @@ motivate
 You’ll see a random quote like:
 
 > "Push yourself, because no one else is going to do it for you."
+
+## 🗑️ Delete
+
+```bash
+rm -rf ~/.terminal-motivation && sed -i.bak '/alias motivate=/d' ~/.bashrc ~/.zshrc ~/.config/fish/config.fish 2>/dev/null
+```
 
 ## 🧠 How It Works
 
